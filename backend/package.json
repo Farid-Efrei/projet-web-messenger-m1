@@ -7,7 +7,7 @@
     "start": "node dist/main.js",
     "start:dev": "ts-node src/main.ts",
     "build": "tsc",
-    "test": "echo \"No tests yet\""
+    "test": "node --test --loader ts-node/esm"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
