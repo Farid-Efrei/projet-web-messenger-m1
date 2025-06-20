@@ -4,8 +4,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { MessageEntity } from './message/message.entity';
 import { MessageModule } from './message/message.module';
 import { AuthModule } from './auth/auth.module';
+
 import { UserEntity } from './user/user.entity';
 import { UserModule } from './user/user.module';
+
+
 
 @Module({
   imports: [
@@ -20,7 +23,10 @@ import { UserModule } from './user/user.module';
       autoSchemaFile: true,
     }),
     AuthModule,
+
     UserModule,
+
+
     MessageModule,
   ],
 })

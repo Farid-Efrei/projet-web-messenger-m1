@@ -10,6 +10,7 @@ export class MessageResolver {
 
   @Query(() => [MessageType])
   @UseGuards(AuthGuard)
+
   async messages(@Args('roomId', { nullable: true }) roomId?: string) {
     return this.messageService.findAll(roomId);
   }
@@ -23,5 +24,13 @@ export class MessageResolver {
     @Args('roomId') roomId: string,
   ) {
     return this.messageService.create(content, recipientId, senderId, roomId);
+
+
+
+  @Mutation(() => MessageType)
+  @UseGuards(AuthGuard)
+  async sendMessage(@Args('content') content: string) {
+    return this.messageService.create(content);
+
   }
 }
