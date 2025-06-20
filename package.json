@@ -1,0 +1,11 @@
+{
+  "name": "projet-web-messenger-m1",
+  "version": "1.0.0",
+  "description": "TP Nest.js - GraphQL - RabbitMQ - VueJS",
+  "private": true,
+  "scripts": {
+    "start:backend": "npm run start:dev --prefix backend",
+    "start:worker": "npm run start:dev --prefix worker",
+    "test": "echo \"No tests yet\""
+  }
+}
