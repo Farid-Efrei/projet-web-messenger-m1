@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 
-import { JwtService } from '@nestjs/jwt';
+    if (!user || user.password !== password) {
+      console.log(`Failed login for ${username}`);
+      return null;
+    }
+    console.log(`User ${username} logged in`);
 import { UserService } from '../user/user.service';
 
 @Injectable()

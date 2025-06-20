@@ -1,8 +1,15 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import * as amqp from 'amqplib';
 
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+      console.log('MessageService connected to RabbitMQ');
+    } catch (err) {
+      console.error('Failed to connect to RabbitMQ', err);
+    }
+    if (await this.users.isBlocked(recipientId, senderId)) {
+      console.log(`Message from ${senderId} to ${recipientId} blocked`);
+      return null;
+    }
+    console.log(`Message ${message.id} stored`);
 import { MessageEntity } from './message.entity';
 import { UserService } from '../user/user.service';
 

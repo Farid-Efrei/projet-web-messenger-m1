@@ -1,6 +1,6 @@
 # Messenger Project
 
-
+This project demonstrates a small messenger built with **Nest.js**, **GraphQL** and **RabbitMQ**. Messages are stored in a **PostgreSQL** database and authentication relies on **JWT** tokens. A lightweight React front-end lives in the `frontend/` directory and is served statically by the API.
 This project demonstrates a small messenger built with **Nest.js**, **GraphQL** and **RabbitMQ**. Messages are stored in a **PostgreSQL** database and authentication relies on **JWT** tokens. A lightweight React front-end is included in the `frontend/` directory.
 
 
@@ -37,8 +37,10 @@ This project demonstrates a small messenger built with **Nest.js**, **GraphQL** 
 
 ```bash
 git clone <repo>
-cd projet-web-messenger-m1
+7. Open the app at `http://localhost:3000` (the API serves the React files).
 ```
+
+A small GitHub Actions workflow installs dependencies and runs this command on each push.
 
 2. Install dependencies *(requires internet access)*
 
