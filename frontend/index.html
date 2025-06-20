@@ -3,29 +3,86 @@
 <head>
   <meta charset="UTF-8">
   <title>Messenger</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    :root {
+      --bg: #fff;
+      --text: #000;
+      --border: #ddd;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg);
+      color: var(--text);
+      transition: background-color .3s, color .3s;
+    }
+    .container {
+      max-width: 600px;
+      margin: 2rem auto;
+      padding: 1rem;
+    }
+    ul { list-style: none; padding: 0; }
+    li { padding: .5rem 0; border-bottom: 1px solid var(--border); }
+    input { padding: .5rem; width: 70%; }
+    button { padding: .5rem 1rem; }
+    .theme-toggle { float: right; }
+  </style>
 
   <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
 </head>
 <body>
   <div id="root"></div>
   <script type="text/babel">
     const token = 'secret';
 
+    const themes = {
+      light: { '--bg':'#fff', '--text':'#000', '--border':'#ddd' },
+      dark: { '--bg':'#1e1e1e', '--text':'#eee', '--border':'#555' }
+    };
+
+    function applyTheme(name) {
+      const vars = themes[name];
+      Object.entries(vars).forEach(([k,v]) => document.documentElement.style.setProperty(k,v));
+      localStorage.setItem('theme', name);
+    }
+
+
     function App() {
       const [messages, setMessages] = React.useState([]);
       const [text, setText] = React.useState('');
 
+      const [theme, setTheme] = React.useState(localStorage.getItem('theme') || 'light');
+
+      React.useEffect(() => {
+        applyTheme(theme);
+      }, [theme]);
+
+      React.useEffect(() => {
+        fetchMessages();
+        const id = setInterval(fetchMessages, 5000);
+        return () => clearInterval(id);
+      }, []);
+
+
       React.useEffect(() => { fetchMessages(); }, []);
+
 
       async function fetchMessages() {
         const res = await fetch('/graphql', {
           method: 'POST',
+
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + token
           },
+
           body: JSON.stringify({ query: '{ messages { id content } }' })
         });
         const json = await res.json();
@@ -33,6 +90,13 @@
       }
 
       async function send() {
+
+        if (!text) return;
+        await fetch('/graphql', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+          body: JSON.stringify({ query: 'mutation($c:String!){ sendMessage(content:$c){ id } }', variables: { c: text } })
+
         await fetch('/graphql', {
           method: 'POST',
           headers: {
@@ -43,13 +107,21 @@
             query: 'mutation($c:String!){ sendMessage(content:$c){ id content } }',
             variables: { c: text }
           })
+
         });
         setText('');
         fetchMessages();
       }
 
       return (
+
+        <div className="container">
+          <button className="theme-toggle" onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
+            {theme === 'light' ? 'Dark' : 'Light'} mode
+          </button>
+
         <div>
+
           <h1>Messages</h1>
           <ul>
             {messages.map(m => <li key={m.id}>{m.content}</li>)}
@@ -61,47 +133,8 @@
     }
 
     ReactDOM.createRoot(document.getElementById('root')).render(<App />);
-=======
-  <script src="https://unpkg.com/vue@3"></script>
-</head>
-<body>
-  <div id="app">
-    <h1>Messages</h1>
-    <ul>
-      <li v-for="m in messages" :key="m.id">{{ m.content }}</li>
-    </ul>
-    <input v-model="text" placeholder="Type message"/>
-    <button @click="send">Send</button>
-  </div>
-  <script>
-    const token = 'secret';
-    const app = Vue.createApp({
-      data() {
-        return { messages: [], text: '' };
-      },
-      mounted() { this.fetchMessages(); },
-      methods: {
-        async fetchMessages() {
-          const res = await fetch('/graphql', {
-            method: 'POST',
-            headers: {'Content-Type':'application/json','Authorization':'Bearer '+token},
-            body: JSON.stringify({ query: '{ messages { id content } }' })
-          });
-          const json = await res.json();
-          this.messages = json.data.messages;
-        },
-        async send() {
-          await fetch('/graphql', {
-            method: 'POST',
-            headers: {'Content-Type':'application/json','Authorization':'Bearer '+token},
-            body: JSON.stringify({ query: 'mutation($c:String!){ sendMessage(content:$c){ id content } }', variables:{c:this.text} })
-          });
-          this.text='';
-          this.fetchMessages();
-        }
-      }
-    });
-    app.mount('#app');
+
+
 
   </script>
 </body>

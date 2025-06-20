@@ -1,7 +1,8 @@
 import * as amqp from 'amqplib';
+import { getRabbitUrl } from './config';
 
 async function bootstrap() {
-  const connection = await amqp.connect('amqp://localhost');
+  const connection = await amqp.connect(getRabbitUrl());
   const channel = await connection.createChannel();
   await channel.assertQueue('messages');
   await channel.assertQueue('notifications');
