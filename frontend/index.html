@@ -31,11 +31,17 @@
     button { padding: .5rem 1rem; }
     .theme-toggle { float: right; }
   </style>
+
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
 </head>
 <body>
   <div id="root"></div>
   <script type="text/babel">
     const token = 'secret';
+
     const themes = {
       light: { '--bg':'#fff', '--text':'#000', '--border':'#ddd' },
       dark: { '--bg':'#1e1e1e', '--text':'#eee', '--border':'#555' }
@@ -47,9 +53,11 @@
       localStorage.setItem('theme', name);
     }
 
+
     function App() {
       const [messages, setMessages] = React.useState([]);
       const [text, setText] = React.useState('');
+
       const [theme, setTheme] = React.useState(localStorage.getItem('theme') || 'light');
 
       React.useEffect(() => {
@@ -62,10 +70,19 @@
         return () => clearInterval(id);
       }, []);
 
+
+      React.useEffect(() => { fetchMessages(); }, []);
+
+
       async function fetchMessages() {
         const res = await fetch('/graphql', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+          },
+
           body: JSON.stringify({ query: '{ messages { id content } }' })
         });
         const json = await res.json();
@@ -73,21 +90,38 @@
       }
 
       async function send() {
+
         if (!text) return;
         await fetch('/graphql', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
           body: JSON.stringify({ query: 'mutation($c:String!){ sendMessage(content:$c){ id } }', variables: { c: text } })
+
+        await fetch('/graphql', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+          },
+          body: JSON.stringify({
+            query: 'mutation($c:String!){ sendMessage(content:$c){ id content } }',
+            variables: { c: text }
+          })
+
         });
         setText('');
         fetchMessages();
       }
 
       return (
+
         <div className="container">
           <button className="theme-toggle" onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
             {theme === 'light' ? 'Dark' : 'Light'} mode
           </button>
+
+        <div>
+
           <h1>Messages</h1>
           <ul>
             {messages.map(m => <li key={m.id}>{m.content}</li>)}
@@ -99,6 +133,9 @@
     }
 
     ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+
+
+
   </script>
 </body>
 </html>

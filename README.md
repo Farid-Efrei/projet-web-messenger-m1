@@ -1,6 +1,10 @@
 # Messenger Project
 
+
 This project demonstrates a small messenger built with **Nest.js**, **GraphQL** and **RabbitMQ**. Messages are now persisted to a JSON file and protected by a very simple token based authentication. A lightweight React front-end is included in the `frontend/` directory. The file `backend/messages.json` is created automatically after the first message is sent.
+=======
+
+
 
 ## Features
 
@@ -10,7 +14,11 @@ This project demonstrates a small messenger built with **Nest.js**, **GraphQL** 
 - Sending messages through RabbitMQ
 - File based message persistence
 - Token authentication
+
+
 - Minimal React client
+
+
 
 ## Stack
 
@@ -63,11 +71,16 @@ The worker and the API both read the RabbitMQ URL from the `RABBITMQ_URL` enviro
 
 7. Open the front-end at `http://localhost:3000/index.html`.
 
+7. Open the front-end at `http://localhost:3000/index.html`.
+
 The GraphQL playground is available at `http://localhost:3000/graphql`.
 
 ## Testing
 
+
 Unit tests are located in `backend/test/` and `worker/test/` and can be executed with:
+
+
 
 ```bash
 npm test
