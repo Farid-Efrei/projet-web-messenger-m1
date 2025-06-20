@@ -1,6 +1,6 @@
 # Messenger Project
 
-This repository contains a minimal skeleton for a messenger application built with **Nest.js**, **GraphQL** and **RabbitMQ**.
+This project demonstrates a small messenger built with **Nest.js**, **GraphQL** and **RabbitMQ**. Messages are now persisted to a JSON file and protected by a very simple token based authentication. A lightweight React front-end is included in the `frontend/` directory. The file `backend/messages.json` is created automatically after the first message is sent.
 
 ## Features
 
@@ -8,6 +8,9 @@ This repository contains a minimal skeleton for a messenger application built wi
 - List of users *(placeholder)*
 - List and details of conversations *(placeholder)*
 - Sending messages through RabbitMQ
+- File based message persistence
+- Token authentication
+- Minimal React client
 
 ## Stack
 
@@ -56,12 +59,19 @@ npm run start:dev --prefix backend
 ```bash
 npm run start:dev --prefix worker
 ```
+The worker and the API both read the RabbitMQ URL from the `RABBITMQ_URL` environment variable (see `.env.example`).
+
+7. Open the front-end at `http://localhost:3000/index.html`.
 
 The GraphQL playground is available at `http://localhost:3000/graphql`.
 
 ## Testing
 
-- Unit and integration tests are not yet implemented.
+Unit tests are located in `backend/test/` and `worker/test/` and can be executed with:
+
+```bash
+npm test
+```
 
 ### Example GraphQL queries
 
@@ -82,6 +92,7 @@ query {
   }
 }
 ```
+Authentication uses a static token defined by `API_TOKEN` in the `.env` file.
+The front-end sends this token in the `Authorization` header when communicating with the GraphQL API.
 
-This skeleton is a starting point for the project. Extend it by adding authentication, persistence, real-time subscriptions and a frontend client.
-
+This skeleton can be extended with real databases, authentication strategies or real-time subscriptions.
