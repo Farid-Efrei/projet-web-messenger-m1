@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Messenger</title>
+
   <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -60,6 +61,48 @@
     }
 
     ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+=======
+  <script src="https://unpkg.com/vue@3"></script>
+</head>
+<body>
+  <div id="app">
+    <h1>Messages</h1>
+    <ul>
+      <li v-for="m in messages" :key="m.id">{{ m.content }}</li>
+    </ul>
+    <input v-model="text" placeholder="Type message"/>
+    <button @click="send">Send</button>
+  </div>
+  <script>
+    const token = 'secret';
+    const app = Vue.createApp({
+      data() {
+        return { messages: [], text: '' };
+      },
+      mounted() { this.fetchMessages(); },
+      methods: {
+        async fetchMessages() {
+          const res = await fetch('/graphql', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json','Authorization':'Bearer '+token},
+            body: JSON.stringify({ query: '{ messages { id content } }' })
+          });
+          const json = await res.json();
+          this.messages = json.data.messages;
+        },
+        async send() {
+          await fetch('/graphql', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json','Authorization':'Bearer '+token},
+            body: JSON.stringify({ query: 'mutation($c:String!){ sendMessage(content:$c){ id content } }', variables:{c:this.text} })
+          });
+          this.text='';
+          this.fetchMessages();
+        }
+      }
+    });
+    app.mount('#app');
+
   </script>
 </body>
 </html>
