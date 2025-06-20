@@ -1,4 +1,8 @@
 node_modules/
 dist/
 messages.json
+
+.sqlite
+db.sqlite
+
 .env

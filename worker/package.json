@@ -10,6 +10,8 @@
     "test": "node --test --loader ts-node/esm"
 
 
+    "test": "node --test --loader ts-node/esm"
+
   },
   "dependencies": {
     "amqplib": "^0.10.3",
