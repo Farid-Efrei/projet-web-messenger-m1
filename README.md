@@ -1,6 +1,8 @@
 # Messenger Project
 
-This project demonstrates a small messenger built with **Nest.js**, **GraphQL** and **RabbitMQ**. Messages are now persisted to a JSON file and protected by a very simple token based authentication. A lightweight Vue.js front-end is included in the `frontend/` directory.
+
+This project demonstrates a small messenger built with **Nest.js**, **GraphQL** and **RabbitMQ**. Messages are now persisted to a JSON file and protected by a very simple token based authentication. A lightweight React front-end is included in the `frontend/` directory.
+
 
 ## Features
 
@@ -10,7 +12,9 @@ This project demonstrates a small messenger built with **Nest.js**, **GraphQL** 
 - Sending messages through RabbitMQ
 - File based message persistence
 - Token authentication
-- Minimal Vue.js client
+
+- Minimal React client
+
 
 ## Stack
 

@@ -1,7 +1,7 @@
 {
   "name": "projet-web-messenger-m1",
   "version": "1.0.0",
-  "description": "TP Nest.js - GraphQL - RabbitMQ - VueJS",
+  "description": "TP Nest.js - GraphQL - RabbitMQ - React",
   "private": true,
   "scripts": {
     "start:backend": "npm run start:dev --prefix backend",
