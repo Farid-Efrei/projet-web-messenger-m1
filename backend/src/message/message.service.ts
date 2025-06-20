@@ -1,14 +1,18 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import * as amqp from 'amqplib';
-import { MessageRepository } from './message.repository';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { MessageEntity } from './message.entity';
 
 @Injectable()
 export class MessageService implements OnModuleInit {
   private channel: amqp.Channel | undefined;
-  constructor(private readonly repo: MessageRepository) {}
+  constructor(
+    @InjectRepository(MessageEntity)
+    private readonly repo: Repository<MessageEntity>,
+  ) {}
 
   async onModuleInit() {
-    await this.repo.load();
     try {
       const conn = await amqp.connect(process.env.RABBITMQ_URL || 'amqp://localhost');
       this.channel = await conn.createChannel();
@@ -17,16 +21,19 @@ export class MessageService implements OnModuleInit {
     } catch {}
   }
 
-  async create(content: string) {
-    const message = await this.repo.create(content);
+  async create(content: string, recipientId: string) {
+    const message = await this.repo.save({ content, recipientId });
     if (this.channel) {
       this.channel.sendToQueue('messages', Buffer.from(content));
-      this.channel.sendToQueue('notifications', Buffer.from('new message'));
+      this.channel.sendToQueue(
+        `notifications.${recipientId}`,
+        Buffer.from('new message'),
+      );
     }
     return message;
   }
 
   async findAll() {
-    return this.repo.findAll();
+    return this.repo.find();
   }
 }

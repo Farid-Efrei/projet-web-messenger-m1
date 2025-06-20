@@ -1,13 +1,30 @@
 import { Injectable } from '@nestjs/common';
-import { config } from 'dotenv';
+import { JwtService } from '@nestjs/jwt';
 
-config();
+interface User { id: string; username: string; password: string }
 
 @Injectable()
 export class AuthService {
-  private readonly token = process.env.API_TOKEN || 'secret';
+  private users: User[] = [
+    { id: '1', username: 'admin', password: 'password' },
+  ];
 
-  validateToken(token: string): boolean {
-    return token === this.token;
+  constructor(private readonly jwt: JwtService) {}
+
+  login(username: string, password: string): string | null {
+    const user = this.users.find(
+      u => u.username === username && u.password === password,
+    );
+    if (!user) return null;
+    return this.jwt.sign({ sub: user.id });
+  }
+
+  verify(token: string): boolean {
+    try {
+      this.jwt.verify(token);
+      return true;
+    } catch {
+      return false;
+    }
   }
 }

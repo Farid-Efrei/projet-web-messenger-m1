@@ -16,7 +16,10 @@ export class MessageResolver {
 
   @Mutation(() => MessageType)
   @UseGuards(AuthGuard)
-  async sendMessage(@Args('content') content: string) {
-    return this.messageService.create(content);
+  async sendMessage(
+    @Args('content') content: string,
+    @Args('recipientId') recipientId: string,
+  ) {
+    return this.messageService.create(content, recipientId);
   }
 }

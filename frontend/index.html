@@ -31,19 +31,50 @@
     button { padding: .5rem 1rem; }
     .theme-toggle { float: right; }
   </style>
+    let token = localStorage.getItem('token');
+      const [username, setUsername] = React.useState('admin');
+      const [password, setPassword] = React.useState('password');
+      const [logged, setLogged] = React.useState(!!token);
+        if (logged) {
+          fetchMessages();
+          const id = setInterval(fetchMessages, 5000);
+          return () => clearInterval(id);
+        }
+      }, [logged]);
 
-  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
-</head>
-<body>
-  <div id="root"></div>
-  <script type="text/babel">
-    const token = 'secret';
-
-    const themes = {
-      light: { '--bg':'#fff', '--text':'#000', '--border':'#ddd' },
+      async function loginUser() {
+        const res = await fetch('/graphql', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: 'mutation($u:String!,$p:String!){login(username:$u,password:$p)}', variables: { u: username, p: password } }),
+        });
+        const json = await res.json();
+        token = json.data.login;
+        if (token) {
+          localStorage.setItem('token', token);
+          setLogged(true);
+        }
+      }
+          body: JSON.stringify({ query: '{ messages { id content recipientId } }' })
+          body: JSON.stringify({ query: 'mutation($c:String!){ sendMessage(content:$c, recipientId:"u2"){ id } }', variables: { c: text } })
+          {!logged && (
+            <div style={{marginBottom: '1rem'}}>
+              <h2>Login</h2>
+              <input value={username} onChange={e => setUsername(e.target.value)} placeholder="user" />
+              <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="pass" />
+              <button onClick={loginUser}>Login</button>
+            </div>
+          )}
+          {logged && (
+            <>
+              <h1>Messages</h1>
+              <ul>
+                {messages.map(m => <li key={m.id}>{m.content} &rarr; {m.recipientId}</li>)}
+              </ul>
+              <input value={text} onChange={e => setText(e.target.value)} placeholder="Type message" />
+              <button onClick={send}>Send</button>
+            </>
+          )}
       dark: { '--bg':'#1e1e1e', '--text':'#eee', '--border':'#555' }
     };
 

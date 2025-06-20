@@ -5,7 +5,7 @@ async function bootstrap() {
   const connection = await amqp.connect(getRabbitUrl());
   const channel = await connection.createChannel();
   await channel.assertQueue('messages');
-  await channel.assertQueue('notifications');
+  await channel.assertQueue('notifications.u2');
 
   console.log('Worker listening for messages and notifications...');
   channel.consume('messages', msg => {
@@ -15,7 +15,7 @@ async function bootstrap() {
     }
   });
 
-  channel.consume('notifications', msg => {
+  channel.consume('notifications.u2', msg => {
     if (msg) {
       console.log('Notification:', msg.content.toString());
       channel.ack(msg);

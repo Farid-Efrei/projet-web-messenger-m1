@@ -7,4 +7,7 @@ export class MessageType {
 
   @Field()
   content: string;
+
+  @Field()
+  recipientId: string;
 }
