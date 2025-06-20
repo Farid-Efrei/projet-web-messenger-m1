@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Messenger</title>
+  <script src="https://unpkg.com/vue@3"></script>
+</head>
+<body>
+  <div id="app">
+    <h1>Messages</h1>
+    <ul>
+      <li v-for="m in messages" :key="m.id">{{ m.content }}</li>
+    </ul>
+    <input v-model="text" placeholder="Type message"/>
+    <button @click="send">Send</button>
+  </div>
+  <script>
+    const token = 'secret';
+    const app = Vue.createApp({
+      data() {
+        return { messages: [], text: '' };
+      },
+      mounted() { this.fetchMessages(); },
+      methods: {
+        async fetchMessages() {
+          const res = await fetch('/graphql', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json','Authorization':'Bearer '+token},
+            body: JSON.stringify({ query: '{ messages { id content } }' })
+          });
+          const json = await res.json();
+          this.messages = json.data.messages;
+        },
+        async send() {
+          await fetch('/graphql', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json','Authorization':'Bearer '+token},
+            body: JSON.stringify({ query: 'mutation($c:String!){ sendMessage(content:$c){ id content } }', variables:{c:this.text} })
+          });
+          this.text='';
+          this.fetchMessages();
+        }
+      }
+    });
+    app.mount('#app');
+  </script>
+</body>
+</html>
