@@ -1,15 +1,23 @@
 import * as amqp from 'amqplib';
+import { getRabbitUrl } from './config';
 
 async function bootstrap() {
-  const connection = await amqp.connect('amqp://localhost');
+  const connection = await amqp.connect(getRabbitUrl());
   const channel = await connection.createChannel();
   await channel.assertQueue('messages');
+  await channel.assertQueue('notifications.u2');
 
-  console.log('Worker listening for messages...');
+  console.log('Worker listening for messages and notifications...');
   channel.consume('messages', msg => {
     if (msg) {
-      const content = msg.content.toString();
-      console.log('Received:', content);
+      console.log('Message:', msg.content.toString());
+      channel.ack(msg);
+    }
+  });
+
+  channel.consume('notifications.u2', msg => {
+    if (msg) {
+      console.log('Notification:', msg.content.toString());
       channel.ack(msg);
     }
   });

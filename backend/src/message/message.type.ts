@@ -7,4 +7,19 @@ export class MessageType {
 
   @Field()
   content: string;
+
+  @Field()
+  senderId: string;
+
+  @Field()
+  recipientId: string;
+
+  @Field()
+  roomId: string;
+
+  @Field()
+  createdAt: Date;
+
+  @Field()
+  read: boolean;
 }
