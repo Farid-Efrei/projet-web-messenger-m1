@@ -6,7 +6,7 @@
     "start": "node dist/main.js",
     "start:dev": "ts-node src/main.ts",
     "build": "tsc",
-    "test": "echo \"No tests yet\""
+    "test": "node --test"
   },
   "dependencies": {
     "amqplib": "^0.10.3",
